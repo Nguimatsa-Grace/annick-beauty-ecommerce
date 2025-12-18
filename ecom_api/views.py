@@ -11,14 +11,15 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     
-    # This enables the search and filtering features
+    # This enables the search, filtering, and ordering features
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     
-    # This allows users to filter by category or price
-    filterset_fields = ['category', 'price']
+    # This allows users to filter by category ID, category NAME, or price
+    # Adding 'category__name' allows filtering by the actual name (e.g. ?category__name=Luxury Skincare)
+    filterset_fields = ['category', 'category__name', 'price']
     
-    # This allows users to search by product name
-    search_fields = ['name']
+    # This allows users to search by product name or description
+    search_fields = ['name', 'description']
     
     # This allows users to sort by price or date
     ordering_fields = ['price', 'created_date']

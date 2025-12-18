@@ -7,9 +7,18 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
-    # This magic line swaps the ID number for the actual Category Name
+    # This magic line displays the Category Name instead of just an ID number
     category = serializers.ReadOnlyField(source='category.name')
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'category', 'stock_quantity', 'image_url', 'created_date']
+        fields = [
+            'id', 
+            'name', 
+            'description', 
+            'price', 
+            'category', 
+            'stock_quantity',  # Added
+            'image_url',       # Added
+            'created_date'     # Added
+        ]

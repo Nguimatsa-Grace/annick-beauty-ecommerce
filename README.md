@@ -4,7 +4,7 @@
 This is a professional-grade REST API built for **Annick Beauty**, an e-commerce platform specializing in luxury human hair wigs, skincare, and hair care products. This API serves as the backend for managing inventory, handling user authentication, and providing searchable product data.
 
 ## 🛠 Technologies Used
-* **Framework:** Django 5.2 & Django REST Framework (DRF)
+* **Framework:** Django 5.1 & Django REST Framework (DRF)
 * **Database:** SQLite (Django ORM)
 * **Authentication:** JWT (SimpleJWT) & Session Authentication
 * **Deployment:** PythonAnywhere (Live with HTTPS)
@@ -52,8 +52,14 @@ The API includes powerful search capabilities to help frontend users find produc
   * **Description:** Permanently remove a product from the database.
   * **Access:** Restricted to Admin users only.
 
-## 🧪 How to Test Search & Filters
+🧪 How to Test Search & Filters
+
 You can test the functional requirements by appending these parameters to the base URL:
-* **Search by Name:** `https://annickbeauty.pythonanywhere.com/api/products/?search=Water`
-* **Filter by Category:** `https://annickbeauty.pythonanywhere.com/api/products/?category=1`
-* **Ordering by Price:** `https://annickbeauty.pythonanywhere.com/api/products/?ordering=-price`
+
+- **Search by Name (Partial):** `https://annickbeauty.pythonanywhere.com/api/products/?search=Water`
+- **Price Range (Min/Max):** `https://annickbeauty.pythonanywhere.com/api/products/?min_price=100&max_price=300`
+- **In-Stock Only:** `https://annickbeauty.pythonanywhere.com/api/products/?in_stock=true`
+- **Category Name:** `https://annickbeauty.pythonanywhere.com/api/products/?category_name=Human`
+- **Ordering by Price:** `https://annickbeauty.pythonanywhere.com/api/products/?ordering=-price`
+
+

@@ -1,7 +1,32 @@
 from rest_framework import viewsets, filters
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import rest_framework as django_filters
 from .models import Category, Product
 from .serializers import CategorySerializer, ProductSerializer
+
+class ProductFilter(django_filters.FilterSet):
+    """
+    Custom filter class to handle advanced requirements like Price Range 
+    and Stock Availability.
+    """
+    # Price range filters
+    min_price = django_filters.NumberFilter(field_name="price", lookup_expr='gte')
+    max_price = django_filters.NumberFilter(field_name="price", lookup_expr='lte')
+    
+    # Category filters (by ID or by Name)
+    category = django_filters.ModelChoiceFilter(queryset=Category.objects.all())
+    category_name = django_filters.CharFilter(field_name="category__name", lookup_expr='icontains')
+    
+    # Stock Availability: Returns only items where stock is > 0
+    in_stock = django_filters.BooleanFilter(method='filter_in_stock', label="In Stock Only")
+
+    class Meta:
+        model = Product
+        fields = ['category', 'category_name', 'min_price', 'max_price']
+
+    def filter_in_stock(self, queryset, name, value):
+        if value:
+            return queryset.filter(stock_quantity__gt=0)
+        return queryset
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
@@ -11,15 +36,19 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     
-    # This enables the search, filtering, and ordering features
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    # Filter Backends
+    filter_backends = [
+        django_filters.DjangoFilterBackend, 
+        filters.SearchFilter, 
+        filters.OrderingFilter
+    ]
     
-    # This allows users to filter by category ID, category NAME, or price
-    # Adding 'category__name' allows filtering by the actual name (e.g. ?category__name=Luxury Skincare)
-    filterset_fields = ['category', 'category__name', 'price']
+    # Use the custom filter class we created above
+    filterset_class = ProductFilter
     
-    # This allows users to search by product name or description
+    # Partial matching search (name or description)
     search_fields = ['name', 'description']
     
-    # This allows users to sort by price or date
-    ordering_fields = ['price', 'created_date']
+    # Sorting options
+    ordering_fields = ['price', 'created_date', 'stock_quantity']
+    ordering = ['-created_date']  # Default: newest products first
